@@ -6,7 +6,11 @@ const Post = sequelize.define('post', {
         type: DataTypes.TEXT,
         allowNull: false
     },
-    // refers to userid 
+
+    userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
 });
 
 module.exports = Post;

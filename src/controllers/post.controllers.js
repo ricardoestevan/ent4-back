@@ -29,6 +29,7 @@ const remove = catchError(async(req, res) => {
 
 const update = catchError(async(req, res) => {
     const { id } = req.params;
+    delete req.body.userId
     const result = await Post.update(
         req.body,
         { where: {id}, returning: true }

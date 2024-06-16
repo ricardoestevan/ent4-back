@@ -2,21 +2,21 @@ const catchError = require('../utils/catchError');
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const Post = require('../models/Post');
 
 
 
 const getAll = catchError(async (req, res) => {
-    const results = await User.findAll();
+    const results = await User.findAll({include: [Post]});
     return res.json(results);
 });
 
 const create = catchError(async (req, res) => {
-
-    // Desectructurar body y crear variable (password) con el valor de la clave 
+    // Desctructuring body and creating variable for password with the key value 
     const { password } = req.body
-    // Encriptar clave en variable keyEncripted
+    // Encrypt variable on keyEncripted
     const encryptedKey = await bcrypt.hash(password, 10)
-    // Desectructurar body y asignar clave encriptada a password
+    // Destructure body and assign encrypted key to password
     const body = { ...req.body, password: encryptedKey }
     const result = await User.create(body);
     return res.status(201).json(result);
@@ -24,7 +24,7 @@ const create = catchError(async (req, res) => {
 
 const getOne = catchError(async (req, res) => {
     const { id } = req.params;
-    const result = await User.findByPk(id);
+    const result = await User.findByPk(id, {include: [Post]});
     if (!result) return res.sendStatus(404);
     return res.json(result);
 });
@@ -65,6 +65,15 @@ const logged = catchError(async(req, res) => {
     return res.json(user)
 })
 
+const setPosts = catchError(async(req, res) =>{
+    const {id} = req.params
+    const user = await User.findByPk(id)
+    await user.setPosts(req.body)
+    const posts = await user.getPosts()
+    return res.json(posts)
+})
+
+
 module.exports = {
     getAll,
     create,
@@ -72,5 +81,6 @@ module.exports = {
     remove,
     update,
     login,
-    logged
+    logged,
+    setPosts
 }
