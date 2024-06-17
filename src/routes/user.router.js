@@ -14,13 +14,15 @@ routerUser.route('/login')
 routerUser.route('/me')
     .get(verifyJwt, logged);
 
+routerUser.route('/:id/posts')
+    .post(setPosts)
+
 routerUser.route('/:id')
     .get(verifyJwt , getOne)
     .delete(verifyJwt ,remove)
     .put(verifyJwt, update);
 
-routerUser.route('/:id/posts')
-    .post(setPosts)
+
 
 
 
